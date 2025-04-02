@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kasir POS</title>
+</head>
+<body>
+  <h2>Kurangi Stok Produk</h2>
+  <form id="transactionForm">
+    <label for="productId">Product ID:</label>
+    <input type="number" id="productId" required>
+    
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" required>
+    
+    <button type="submit">Kurangi Stok</button>
+  </form>
+
+  <script>
+    document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const productId = parseInt(document.getElementById('productId').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      try {
+        const response = await fetch('http://localhost:3000/api/reduce-stock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId, quantity })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert(`Stok berhasil dikurangi! Sisa stok: ${data.newStock}`);
+        } else {
+          alert(`Error: ${data.error}`);
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan jaringan');
+      }
+    });
+  </script>
+</body>
+</html>
